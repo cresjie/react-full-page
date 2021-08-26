@@ -21,8 +21,7 @@ export default class FullPage extends React.Component {
   constructor(props) {
     super(props);
 
-    this._isScrollPending = false;
-    this._isScrollToSlidePending = false;
+    window._isScrollPending = false;
     this._isScrolledAlready = false;
     this._slides = [];
     this._touchStart = 0;
@@ -163,7 +162,7 @@ export default class FullPage extends React.Component {
 
       
 
-      if (!this._isScrollPending && !this._isScrolledAlready) {
+      if (!window._isScrollPending && !this._isScrolledAlready) {
         if (this._touchStart > touchEnd + touchSensitivity) {
           this.scrollToSlide(this.state.activeSlide + 1);
         } else if (this._touchStart < touchEnd - touchSensitivity) {
@@ -179,12 +178,11 @@ export default class FullPage extends React.Component {
     }
 
     evt.preventDefault();
-    console.log(this._isScrollPending, this._isScrollToSlidePending)
-    if (this._isScrollPending || this._isScrollToSlidePending) {
+    
+    if (window._isScrollPending) {
       return;
     }
 
-    this._isScrollToSlidePending = true;
 
     const scrollDown = (evt.wheelDelta || -evt.deltaY || -evt.detail) < 0;
     let { activeSlide } = this.state;
@@ -201,7 +199,6 @@ export default class FullPage extends React.Component {
     }
 
     this.scrollToSlide(activeSlide);
-    this._isScrollToSlidePending = false;
   }
 
   getSlidesCount = () => this.state.slidesCount
@@ -217,8 +214,8 @@ export default class FullPage extends React.Component {
   }
 
   scrollToSlide = (slide) => {
-    if (!this._isScrollPending && slide >= 0 && slide < this.state.slidesCount) {
-      this._isScrollPending = true;
+    if (!window._isScrollPending && slide >= 0 && slide < this.state.slidesCount) {
+      window._isScrollPending = true;
       const currentSlide = this.state.activeSlide;
       this.props.beforeChange({ from: currentSlide, to: slide });
 
@@ -228,7 +225,7 @@ export default class FullPage extends React.Component {
 
       
       animatedScrollTo(this._slides[slide], this.props.duration, () => {
-        this._isScrollPending = false;
+        window._isScrollPending = false;
         this._isScrolledAlready = true;
 
         this.props.afterChange({ from: currentSlide, to: slide });
