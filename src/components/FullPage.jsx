@@ -185,7 +185,7 @@ export default class FullPage extends React.Component {
     const scrollDown = (evt.wheelDelta || -evt.deltaY || -evt.detail) < 0;
     let { activeSlide } = this.state;
 
-    const isTrackPadScrolling = e.deltaY > 0 && e.deltaY < 30 || e.deltaY > -30 && e.deltaY < 0;
+    const isTrackPadScrolling = evt.deltaY > 0 && evt.deltaY < 30 || evt.deltaY > -30 && evt.deltaY < 0;
     if (isTrackPadScrolling) {
       return false;
     }
