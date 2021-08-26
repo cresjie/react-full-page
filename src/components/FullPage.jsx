@@ -22,6 +22,7 @@ export default class FullPage extends React.Component {
     super(props);
 
     this._isScrollPending = false;
+    this._isScrollToSlidePending = false;
     this._isScrolledAlready = false;
     this._slides = [];
     this._touchStart = 0;
@@ -178,16 +179,19 @@ export default class FullPage extends React.Component {
     }
 
     evt.preventDefault();
-    if (this._isScrollPending) {
+    console.log(this._isScrollPending, this._isScrollToSlidePending)
+    if (this._isScrollPending || this._isScrollToSlidePending) {
       return;
     }
+
+    this._isScrollToSlidePending = true;
 
     const scrollDown = (evt.wheelDelta || -evt.deltaY || -evt.detail) < 0;
     let { activeSlide } = this.state;
 
     const isTrackPadScrolling = evt.deltaY > 0 && evt.deltaY < 30 || evt.deltaY > -30 && evt.deltaY < 0;
     if (isTrackPadScrolling) {
-      return false;
+      return;
     }
     
     if (scrollDown) {
@@ -197,6 +201,7 @@ export default class FullPage extends React.Component {
     }
 
     this.scrollToSlide(activeSlide);
+    this._isScrollToSlidePending = false;
   }
 
   getSlidesCount = () => this.state.slidesCount
@@ -213,6 +218,7 @@ export default class FullPage extends React.Component {
 
   scrollToSlide = (slide) => {
     if (!this._isScrollPending && slide >= 0 && slide < this.state.slidesCount) {
+      this._isScrollPending = true;
       const currentSlide = this.state.activeSlide;
       this.props.beforeChange({ from: currentSlide, to: slide });
 
@@ -220,7 +226,7 @@ export default class FullPage extends React.Component {
         activeSlide: slide,
       });
 
-      this._isScrollPending = true;
+      
       animatedScrollTo(this._slides[slide], this.props.duration, () => {
         this._isScrollPending = false;
         this._isScrolledAlready = true;
