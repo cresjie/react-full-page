@@ -217,7 +217,7 @@ export default class FullPage extends React.Component {
   }
 
   scrollToSlide = (slide) => {
-    if (!window._isScrollPending && slide >= 0 && slide < this.state.slidesCount) {
+    if ( (!window._isScrollPending || !window._isOnScrollPending) && slide >= 0 && slide < this.state.slidesCount) {
       window._isScrollPending = true;
       const currentSlide = this.state.activeSlide;
       this.props.beforeChange({ from: currentSlide, to: slide });
