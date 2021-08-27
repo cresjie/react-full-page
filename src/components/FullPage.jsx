@@ -217,23 +217,28 @@ export default class FullPage extends React.Component {
   }
 
   scrollToSlide = (slide) => {
-    if ( (!window._isScrollPending || !window._isOnScrollPending) && slide >= 0 && slide < this.state.slidesCount) {
-      window._isScrollPending = true;
-      const currentSlide = this.state.activeSlide;
-      this.props.beforeChange({ from: currentSlide, to: slide });
+    if ( !window._isScrollPending  ) {
+      if (slide >= 0 && slide < this.state.slidesCount) {
+        window._isScrollPending = true;
+        const currentSlide = this.state.activeSlide;
+        this.props.beforeChange({ from: currentSlide, to: slide });
 
-      this.setState({
-        activeSlide: slide,
-      });
+        this.setState({
+          activeSlide: slide,
+        });
 
-      
-      animatedScrollTo(this._slides[slide], this.props.duration, () => {
-        window._isScrollPending = false;
+        
+        animatedScrollTo(this._slides[slide], this.props.duration, () => {
+          window._isScrollPending = false;
+          window._isOnScrollPending = false;
+          this._isScrolledAlready = true;
+
+          this.props.afterChange({ from: currentSlide, to: slide });
+        });
+      } else {
         window._isOnScrollPending = false;
-        this._isScrolledAlready = true;
+      }
 
-        this.props.afterChange({ from: currentSlide, to: slide });
-      });
     }
   }
 
