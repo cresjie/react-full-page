@@ -22,6 +22,7 @@ export default class FullPage extends React.Component {
     super(props);
 
     window._isScrollPending = false;
+    window._isOnScrollPending = false;
     this._isScrolledAlready = false;
     this._slides = [];
     this._touchStart = 0;
@@ -179,9 +180,11 @@ export default class FullPage extends React.Component {
 
     evt.preventDefault();
     
-    if (window._isScrollPending) {
+    if (window._isScrollPending || window._isOnScrollPending) {
       return;
     }
+
+    window._isOnScrollPending = true;
 
 
     const scrollDown = (evt.wheelDelta || -evt.deltaY || -evt.detail) < 0;
@@ -226,6 +229,7 @@ export default class FullPage extends React.Component {
       
       animatedScrollTo(this._slides[slide], this.props.duration, () => {
         window._isScrollPending = false;
+        window._isOnScrollPending = false;
         this._isScrolledAlready = true;
 
         this.props.afterChange({ from: currentSlide, to: slide });
