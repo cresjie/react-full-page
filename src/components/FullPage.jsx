@@ -139,7 +139,7 @@ export default class FullPage extends React.Component {
           break;
         } else {
           var overFlowY = window.getComputedStyle(element)['overflow-y']
-          if ( (overFlowY == 'auto' || overFlowY == 'scroll') && element.scrollHeight > element.clientHeight) {
+          if ( ['auto', 'scroll', 'visible'].includes(overFlowY) && element.scrollHeight > element.clientHeight) {
             if ( (this._touchStart > touchEnd + touchSensitivity && element.scrollHeight > (element.scrollTop+element.clientHeight) ) ||
                  (this._touchStart < touchEnd - touchSensitivity && element.scrollTop > 0)
 
